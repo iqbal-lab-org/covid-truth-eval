@@ -51,16 +51,21 @@ def vcf_file_to_sorted_list(vcf_file):
     records = []
     ref_name = None
 
-    header_lines, vcf_records = cluster_vcf_records.vcf_file_read.vcf_file_to_list(vcf_file)
+    header_lines, vcf_records = cluster_vcf_records.vcf_file_read.vcf_file_to_list(
+        vcf_file
+    )
     for record in vcf_records:
         if ref_name is None:
             ref_name = record.CHROM
         elif ref_name != record.CHROM:
-            raise Exception(f"Only one CHROM allowed in VCF file, found more than one: {ref_name}, {record.CHROM}")
+            raise Exception(
+                f"Only one CHROM allowed in VCF file, found more than one: {ref_name}, {record.CHROM}"
+            )
         records.append(record)
 
     records.sort(key=operator.attrgetter("POS"))
     return records
+
 
 def apply_variants_to_genome(vcf_file, out_fasta, ref_seq=None, ref_fasta=None):
     """Takes the variants in vcf_file, and applies them to the associated
@@ -79,29 +84,30 @@ def apply_variants_to_genome(vcf_file, out_fasta, ref_seq=None, ref_fasta=None):
     # so start at the end and work backwards
     for vcf_record in reversed(vcf_records):
         genotype = set(vcf_record.FORMAT["GT"].split("/"))
-        assert len(genotype) == 1
+        if len(genotype) != 1:
+            # FIXME
+            raise NotImplementedError()
         try:
             allele_index = int(genotype.pop())
         except:
-            logging.warning(f"Ignoring VCF line because genotype(s) not ints: {vcf_record}")
-            continue
+            raise Exception(
+                f"Genotype must be int(s). Cannot use this line of VCF file: {vcf_record}"
+            )
         if allele_index == 0:
+            logging.warn(
+                f"Genotype of zero in truth VCF. Is that deliberate? Ignoring the line: {vcf_record}"
+            )
             continue
 
-        # Some tools report two (or more) variants that overlap.
-        # No clear "right" option here.
-        # If the current record overlaps the previous one, ignore it.
-        # We could try to be cleverer about this (take best records
-        # based on likelihoods or whatever else), but every tool is
-        # different so no sane consistent way of doing this across tools
+        # If the current record overlaps the previous one, stop.
+        # Should not happen in a nice truth VCF.
         if (
             previous_ref_start is not None
             and vcf_record.ref_end_pos() >= previous_ref_start
         ):
-            logging.warn(
-                f"Skipping this record when calculating recall because it overlaps another record: {vcf_record}"
+            raise Exception(
+                f"VCF record overlaps another record, cannot continue: {vcf_record}"
             )
-            continue
 
         previous_ref_start = vcf_record.POS
         allele = vcf_record.ALT[allele_index - 1]
@@ -112,4 +118,3 @@ def apply_variants_to_genome(vcf_file, out_fasta, ref_seq=None, ref_fasta=None):
     with open(out_fasta, "w") as f:
         new_seq = pyfastaq.sequences.Fasta(f"{ref_seq.id}.mutated", "".join(new_seq))
         print(new_seq, file=f)
-

@@ -1,0 +1,9 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##contig=<ID=ref,length=1000>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	sample_42
+ref	1	.	A	T	42.42	.	.	GT	1/1
+ref	5	.	G	C	42.42	.	.	GT	1/1
+ref	4	.	T	TA	42.42	.	.	GT	1/1
+ref	2	.	CG	C	42.42	.	.	GT	1/1
