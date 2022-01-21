@@ -94,7 +94,7 @@ def apply_variants_to_genome(vcf_file, out_fasta, ref_seq=None, ref_fasta=None):
                 f"Genotype must be int(s). Cannot use this line of VCF file: {vcf_record}"
             )
         if allele_index == 0:
-            logging.warn(
+            logging.warning(
                 f"Genotype of zero in truth VCF. Is that deliberate? Ignoring the line: {vcf_record}"
             )
             continue
