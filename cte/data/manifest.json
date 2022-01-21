@@ -1,0 +1,10 @@
+{
+  "covid.MN908947": {
+    "ref_fasta": "MN908947.fasta",
+    "primer_tsvs": {
+      "COVID-ARTIC-V3": "covid-artic-v3.vwf.tsv",
+      "COVID-ARTIC-V4": "covid-artic-v4.vwf.tsv",
+      "COVID-MIDNIGHT-1200": "covid-midnight-1200.vwf.tsv"
+    }
+  }
+}

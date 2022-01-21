@@ -1,0 +1,7 @@
+Amplicon_name	Primer_name	Left_or_right	Sequence	Position
+amp1	amp1_left	left	ACC	30
+amp1	amp1_left_alt	left	AA	29
+amp1	amp1_right	right	GT	42
+amp2	amp2_left	left	GGG	130
+amp2	amp2_right	right	TT	142
+amp2	amp2_right_alt	right	TT	143
