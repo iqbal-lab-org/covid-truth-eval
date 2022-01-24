@@ -1,19 +1,19 @@
-from cte import one_run_evaluator, utils
-
+import logging
 import os
+
+from cte import one_run_evaluator, utils
 
 
 def run(options):
-    if options.force:
+    if options.force and os.path.exists(options.outdir):
+        logging.info(
+            f"Option --force used. Deleting existing output directory {options.outdir}"
+        )
         utils.syscall(f"rm -rf {options.outdir}")
-    os.mkdir(options.outdir)
-    truth_files_dir = os.path.join(options.outdir, "Truth_files")
-    evaluator = one_run_evaluator.OneSampleEvaluator(
-        options.ref_fasta, options.truth_vcf, truth_files_dir
-    )
-    eval_dir = os.path.join(options.outdir, "Results")
-    evaluator.evaluate_one_fasta(
-        eval_dir,
+    one_run_evaluator.eval_one_fasta(
+        options.outdir,
         options.fasta_to_eval,
+        options.ref_fasta,
+        options.truth_vcf,
         options.primers,
     )

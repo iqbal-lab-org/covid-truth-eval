@@ -16,7 +16,7 @@ def syscall(command):
         stdout=subprocess.PIPE,
         universal_newlines=True,
     )
-    logging.info(f"Return code: {completed_process.returncode}")
+    logging.info(f"Return code = {completed_process.returncode} from: {command}")
     if completed_process.returncode != 0:
         print("Error running this command:", command, file=sys.stderr)
         print("Return code:", completed_process.returncode, file=sys.stderr)

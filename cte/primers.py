@@ -1,4 +1,5 @@
 import csv
+import logging
 import os
 
 from cte import built_in_data
@@ -20,6 +21,7 @@ def load_viridian_workflow_primers_tsv(infile):
         else:
             raise Exception(f"Primers '{infile}' not found")
 
+    logging.info(f"Loading primers from file {infile}")
     with open(infile) as f:
         reader = csv.DictReader(f, delimiter="\t")
         for d in reader:
