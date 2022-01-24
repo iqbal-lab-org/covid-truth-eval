@@ -1,0 +1,72 @@
+{
+  "tmp.evaluate_runs.data/truth.a.vcf": {
+    "name0": {
+      "snp": {
+        "TP": 1,
+        "FP": 0,
+        "FN": 0
+      },
+      "indel": {
+        "TP": 0,
+        "FP": 0,
+        "FN": 0
+      },
+      "primer_snp": {
+        "TP": 0,
+        "FP": 0,
+        "FN": 0
+      },
+      "primer_indel": {
+        "TP": 0,
+        "FP": 0,
+        "FN": 0
+      }
+    },
+    "name1": {
+      "snp": {
+        "TP": 0,
+        "FP": 1,
+        "FN": 1
+      },
+      "indel": {
+        "TP": 0,
+        "FP": 0,
+        "FN": 0
+      },
+      "primer_snp": {
+        "TP": 0,
+        "FP": 0,
+        "FN": 0
+      },
+      "primer_indel": {
+        "TP": 0,
+        "FP": 0,
+        "FN": 0
+      }
+    }
+  },
+  "tmp.evaluate_runs.data/truth.b.vcf": {
+    "name2": {
+      "snp": {
+        "TP": 1,
+        "FP": 1,
+        "FN": 1
+      },
+      "indel": {
+        "TP": 0,
+        "FP": 0,
+        "FN": 0
+      },
+      "primer_snp": {
+        "TP": 1,
+        "FP": 0,
+        "FN": 0
+      },
+      "primer_indel": {
+        "TP": 0,
+        "FP": 0,
+        "FN": 0
+      }
+    }
+  }
+}

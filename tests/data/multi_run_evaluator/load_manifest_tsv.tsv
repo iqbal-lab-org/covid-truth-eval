@@ -1,0 +1,4 @@
+name	truth_vcf	eval_fasta	primers
+run1	truth_a.vcf	run1.fa	COVID-ARTIC-V3
+run2	truth_a.vcf	run2.fa	COVID-ARTIC-V4
+run3	truth_b.vcf	run3.fa	COVID-ARTIC-V4
