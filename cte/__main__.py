@@ -71,11 +71,6 @@ def main(args=None):
         help=f"REQUIRED. TSV file of primers (in 'viridian_workflow' format). Or use a built-in scheme by providing one of these names: {scheme_names}",
         metavar="SCHEME_NAME/FILENAME",
     )
-    subparser_eval_one_run.add_argument(
-        "--ref_mask_bed",
-        help="BED file of positions to mask in the reference genome",
-        metavar="FILENAME",
-    )
     subparser_eval_one_run.set_defaults(func=cte.tasks.eval_one_run.run)
 
     # ------------------------ eval_runs --------------------------------------
