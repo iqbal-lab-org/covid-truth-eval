@@ -52,6 +52,41 @@ def all_results_dict_to_tsv(all_results, tsv_out):
                 )
 
 
+def all_results_dict_to_errors_tsv(all_results, tsv_out):
+    with open(tsv_out, "w") as f:
+        print(
+            "Name",
+            "Truth_vcf",
+            "TP_or_FP",
+            "CHROM",
+            "POS",
+            "ID",
+            "REF",
+            "ALT",
+            "QUAL",
+            "FILTER",
+            "INFO",
+            "FORMAT",
+            "sample",
+            sep="\t",
+            file=f,
+        )
+        for truth_vcf in sorted(all_results):
+            for name in sorted(all_results[truth_vcf]):
+                for tp_or_fp, error_list in sorted(
+                    all_results[truth_vcf][name]["Errors"].items()
+                ):
+                    for error in error_list:
+                        print(
+                            name,
+                            truth_vcf,
+                            tp_or_fp,
+                            error,
+                            sep="\t",
+                            file=f,
+                        )
+
+
 def evaluate_runs(manifest_tsv, outdir, ref_fasta):
     os.mkdir(outdir)
     processing_dir = os.path.join(outdir, "Processing")
@@ -101,3 +136,6 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta):
     results_tsv = os.path.join(outdir, "results.tsv")
     logging.info(f"Writing TSV file of results {results_tsv}")
     all_results_dict_to_tsv(all_results, results_tsv)
+
+    errors_tsv = os.path.join(outdir, "errors.tsv")
+    all_results_dict_to_errors_tsv(all_results, errors_tsv)
