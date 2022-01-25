@@ -60,12 +60,13 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta):
     truth_vcf_to_dir = {}
     all_results = {}
 
-    for truth_vcf in manifest_data:
+    for truth_vcf in sorted(manifest_data):
         logging.info("=" * 60)
         logging.info(f"Start processing truth VCF file {truth_vcf}")
 
-        truth_root_dir = os.path.join(processing_dir, str(len(truth_vcf_to_dir)))
+        truth_root_dir = str(len(truth_vcf_to_dir))
         truth_vcf_to_dir[truth_vcf] = truth_root_dir
+        truth_root_dir = os.path.join(processing_dir, truth_root_dir)
         os.mkdir(truth_root_dir)
         truth_files_dir = os.path.join(truth_root_dir, "Truth_files")
         evaluator = one_run_evaluator.OneSampleEvaluator(
@@ -74,7 +75,7 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta):
         all_results[truth_vcf] = {}
         logging.info(f"Made truth files. Processing each run for VCF file {truth_vcf}")
 
-        for run_name in manifest_data[truth_vcf]:
+        for run_name in sorted(manifest_data[truth_vcf]):
             logging.info("_" * 40)
             logging.info(f"Start processing {run_name} with truth VCF {truth_vcf}")
             run_outdir = os.path.join(truth_root_dir, run_name)
@@ -87,6 +88,10 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta):
             )
             logging.info(f"Finished processing {run_name} with truth VCF {truth_vcf}")
         logging.info(f"Finished processing runs for truth VCF file {truth_vcf}")
+
+    vcf_to_dir_json = os.path.join(processing_dir, "vcf_to_dir.json")
+    with open(vcf_to_dir_json, "w") as f:
+        json.dump(truth_vcf_to_dir, f, indent=2)
 
     results_json = os.path.join(outdir, "results.json")
     logging.info(f"Writing JSON file of results {results_json}")
