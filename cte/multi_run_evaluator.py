@@ -57,7 +57,7 @@ def all_results_dict_to_errors_tsv(all_results, tsv_out):
         print(
             "Name",
             "Truth_vcf",
-            "TP_or_FP",
+            "FP_or_FN",
             "CHROM",
             "POS",
             "ID",
