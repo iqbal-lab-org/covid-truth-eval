@@ -1,0 +1,4 @@
+Name	Truth_vcf	snp_TP	snp_FP	snp_FN	indel_TP	indel_FP	indel_FN	primer_snp_TP	primer_snp_FP	primer_snp_FN	primer_indel_TP	primer_indel_FP	primer_indel_FN
+name0	tmp.evaluate_runs.data/truth.a.vcf	1	0	0	0	0	0	0	0	0	0	0	0
+name1	tmp.evaluate_runs.data/truth.a.vcf	0	1	1	0	0	0	0	0	0	0	0	0
+name2	tmp.evaluate_runs.data/truth.b.vcf	1	1	1	0	0	0	1	0	0	0	0	0

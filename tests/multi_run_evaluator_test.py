@@ -1,4 +1,5 @@
 import copy
+import filecmp
 import json
 import os
 import pytest
@@ -29,7 +30,6 @@ def test_load_manifest_tsv():
     assert got == expect
 
 
-
 def test_evaluate_runs():
     # Make minimal test data for 3 runs. We're more interested in the overall
     # pipeline running on all runs, not the quality of results - that is tested
@@ -58,7 +58,9 @@ def test_evaluate_runs():
         print(
             "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tsample_1",
             "ref\t501\t.\tA\tT\t42.42\tPASS\t.\tGT\t1/1",
-            sep="\n", file=f)
+            sep="\n",
+            file=f,
+        )
     truth_vcfs.append(truth_vcfs[0])
 
     truth_vcfs.append(os.path.join(tmp_data_root, "truth.b.vcf"))
@@ -67,7 +69,9 @@ def test_evaluate_runs():
             "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tsample_1",
             "ref\t501\t.\tA\tT\t42.42\tPASS\t.\tGT\t1/1",
             "ref\t601\t.\tT\tG\t42.42\tPASS\t.\tGT\t1/1",
-            sep="\n", file=f)
+            sep="\n",
+            file=f,
+        )
 
     eval_seq = copy.copy(ref_seq)
     eval_seq[500] = "T"
@@ -108,8 +112,9 @@ def test_evaluate_runs():
     with open(manifest_tsv, "w") as f:
         print("name", "truth_vcf", "eval_fasta", "primers", sep="\t", file=f)
         for i in range(3):
-            print(f"name{i}", truth_vcfs[i], eval_fastas[i], primers_tsv, sep="\t", file=f)
-
+            print(
+                f"name{i}", truth_vcfs[i], eval_fastas[i], primers_tsv, sep="\t", file=f
+            )
 
     outdir = "tmp.evaluate_runs"
     utils.syscall(f"rm -rf {outdir}")
@@ -120,4 +125,7 @@ def test_evaluate_runs():
         expect_results = json.load(f)
     assert got_results == expect_results
 
+    expect_tsv = os.path.join(data_dir, "evaluate_runs.expect_results.tsv")
+    got_tsv = os.path.join(outdir, "results.tsv")
+    assert filecmp.cmp(got_tsv, expect_tsv, shallow=False)
     utils.syscall(f"rm -r {outdir} {tmp_data_root}")
