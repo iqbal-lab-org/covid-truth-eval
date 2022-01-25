@@ -44,6 +44,14 @@ def test_eval_one_fasta():
         "indel": {"TP": 2, "FP": 0, "FN": 0},
         "primer_snp": {"TP": 0, "FP": 1, "FN": 1},
         "primer_indel": {"TP": 0, "FP": 0, "FN": 0},
+        "Errors": {
+            "FP": [
+                "ref\t601\t4\tT\tG\t.\tPASS\t.\tGT:VFR_ED_RA:VFR_ED_TR:VFR_ED_TA:VFR_ALLELE_LEN:VFR_ALLELE_MATCH_COUNT:VFR_ALLELE_MATCH_FRAC:VFR_IN_MASK:VFR_RESULT\t1/1:1:1:1:1:0:0.0:0:FP"
+            ],
+            "FN": [
+                "ref\t601\t.\tT\tA\t42.42\tPASS\t.\tGT:VFR_ED_RA:VFR_ED_TR:VFR_ED_TA:VFR_ALLELE_LEN:VFR_ALLELE_MATCH_COUNT:VFR_ALLELE_MATCH_FRAC:VFR_IN_MASK:VFR_RESULT\t1/1:1:1:1:1:0:0.0:0:FP"
+            ],
+        },
     }
 
     with open(truth_vcf, "w") as f:
@@ -109,6 +117,7 @@ def test_eval_one_fasta():
         truth_vcf,
         primers_tsv,
     )
+    print(got)
     assert got == expect
     with open(os.path.join(outdir, "Results", "results.json")) as f:
         got = json.load(f)

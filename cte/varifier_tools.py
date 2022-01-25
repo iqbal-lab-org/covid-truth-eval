@@ -4,9 +4,10 @@ import os
 import cluster_vcf_records
 
 
-def varifier_vcf_to_counts(
+def varifier_vcf_to_counts_and_errors(
     infile, primers, first_primer_start, last_primer_end, fp_or_fn
 ):
+    errors = []
     stats = {
         "snp": {"TP": 0, fp_or_fn: 0},
         "indel": {"TP": 0, fp_or_fn: 0},
@@ -27,6 +28,7 @@ def varifier_vcf_to_counts(
             tp_or_fp = "TP"
         else:
             tp_or_fp = fp_or_fn
+            errors.append(str(record))
 
         assert len(record.ALT) == 1
         if len(record.REF) == 1 == len(record.ALT[0]):
@@ -41,18 +43,19 @@ def varifier_vcf_to_counts(
                 stats["primer_" + snp_or_indel][tp_or_fp] += 1
                 break
 
-    return stats
+    return stats, errors
 
 
 def varifier_outdir_to_stats(dirname, primers, first_primer_start, last_primer_end):
     precision_vcf = os.path.join(dirname, "precision.vcf")
-    stats = varifier_vcf_to_counts(
+    stats, fp_errors = varifier_vcf_to_counts_and_errors(
         precision_vcf, primers, first_primer_start, last_primer_end, "FP"
     )
     recall_vcf = os.path.join(dirname, "recall", "recall.vcf.masked.vcf")
-    recall_stats = varifier_vcf_to_counts(
+    recall_stats, fn_errors = varifier_vcf_to_counts_and_errors(
         recall_vcf, primers, first_primer_start, last_primer_end, "FN"
     )
     for key, d in stats.items():
         d["FN"] = recall_stats[key]["FN"]
+    stats["Errors"] = {"FP": fp_errors, "FN": fn_errors}
     return stats
