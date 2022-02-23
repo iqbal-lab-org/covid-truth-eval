@@ -33,6 +33,7 @@ def syscall(command):
     return completed_process
 
 
+
 def load_single_seq_fasta(infile):
     d = {}
     pyfastaq.tasks.file_to_dict(infile, d)

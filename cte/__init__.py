@@ -7,11 +7,13 @@ except:
 
 
 __all__ = [
+    "amplicon_scheme",
     "built_in_data",
+    "iupac",
     "one_run_evaluator",
-    "primers",
     "tasks",
     "utils",
+    "variants",
     "varifier_tools",
 ]
 
