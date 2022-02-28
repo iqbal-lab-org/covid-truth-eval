@@ -1,27 +1,10 @@
-import copy
 import filecmp
-import json
 import os
 import pytest
-import random
 
 from cluster_vcf_records import vcf_record
 
-from cte import built_in_data, one_run_evaluator, utils
-
-this_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = os.path.join(this_dir, "data", "one_run_evaluator")
-
-
-def load_vcf_except_headers(filename):
-    with open(filename) as f:
-        return [x for x in f if not x.startswith("#")]
-
-
-def vcfs_same_exclude_headers(file1, file2):
-    lines1 = load_vcf_except_headers(file1)
-    lines2 = load_vcf_except_headers(file2)
-    return lines1 == lines2
+from cte import built_in_data, msa, one_run_evaluator, utils
 
 
 def different_nucleotide(nuc_in):
@@ -41,7 +24,9 @@ def make_test_data(outdir, test_type):
     }
     ref_seq = utils.load_single_seq_fasta(files["ref_fasta"])
     eval_seq = list(ref_seq)
-    stats = one_run_evaluator.make_empty_stats_dict()
+    stats = msa.make_empty_stats_dict()
+    total_ref = 29836
+    total_in_primer = 4908
 
     # always add a SNP before the first amplicon and after the last one -
     # should get ignored
@@ -49,168 +34,237 @@ def make_test_data(outdir, test_type):
     eval_seq[29899] = different_nucleotide(eval_seq[29899])
 
     if test_type == "No_vars":
-        pass
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_in_primer
     elif test_type == "true_ref":
         # Add a false positive SNP non-het call.
         assert ref_seq[199] == "T"
         eval_seq[199] = "A"
-        record = vcf_record.VcfRecord("MN908947.3\t200\t1\tT\tA\t.\tPASS\t.\tGT\t1/1")
-        stats["All"]["true_ref"]["Called_wrong_alt"] += 1
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_alt] += 1
 
         # Add a false positive SNP non-N het call. Is in a primer
         eval_seq[399] = "Y"
         assert ref_seq[399] == "T"
-        record = vcf_record.VcfRecord("MN908947.3\t400\t2\tT\tY\t.\tPASS\t.\tGT\t1/1")
-        stats["All"]["true_ref"]["Called_wrong_IUPAC"] += 1
-        stats["Primer"]["true_ref"]["Called_wrong_IUPAC"] += 1
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_IUPAC] += 1
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_IUPAC] += 1
 
         # Add a false positive N call.
         eval_seq[599] = "N"
-        record = vcf_record.VcfRecord("MN908947.3\t600\t3\tG\tN\t.\tPASS\t.\tGT\t1/1")
-        stats["All"]["true_ref"]["Called_N"] += 1
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_N] += 1
 
         # Add a false positive two consecutive Ns
         eval_seq[699] = "N"
         eval_seq[700] = "N"
-        stats["All"]["true_ref"]["Called_N"] += 2
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_N] += 2
 
-        # Add a false positve indel call.
+        # Add a false positve insertion call.
         eval_seq[799] = eval_seq[799] + "A"
-        record = vcf_record.VcfRecord("MN908947.3\t800\t4\tG\tGA\t.\tPASS\t.\tGT\t1/1")
-        stats["All"]["true_ref"]["Called_wrong_indel"] += 1
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_indel] += 1
+
+        # Add a false positve deletion call.
+        eval_seq[999] = ""
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_indel] += 1
+
+        # Update the all ref counts
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 6
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = (
+            total_in_primer - 1
+        )
     elif test_type == "SNP_true_alt":
         # A true SNP (not het) called as ref
         assert ref_seq[199] == "T"
-        record = vcf_record.VcfRecord(f"MN908947.3\t200\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["SNP_true_alt"]["Called_ref"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t200\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_ref] += 1
         truth_vcf_records.append(record)
 
         # A true SNP (not het) called correct alt. Also is in a primer
         assert ref_seq[399] == "T"
         eval_seq[399] = "A"
-        record = vcf_record.VcfRecord(f"MN908947.3\t400\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["SNP_true_alt"]["Called_correct_alt"] += 1
-        stats["Primer"]["SNP_true_alt"]["Called_correct_alt"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t400\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_correct_alt] += 1
+        stats["Primer"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_correct_alt] += 1
         truth_vcf_records.append(record)
 
         # A true SNP (not het) called wrong alt
         assert ref_seq[599] == "G"
         eval_seq[599] = "T"
-        record = vcf_record.VcfRecord(f"MN908947.3\t600\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["SNP_true_alt"]["Called_wrong_alt"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t600\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_wrong_alt] += 1
         truth_vcf_records.append(record)
 
         # A true SNP (not het) called as N
         assert ref_seq[799] == "G"
         eval_seq[799] = "N"
-        record = vcf_record.VcfRecord(f"MN908947.3\t800\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["SNP_true_alt"]["Called_N"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t800\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_N] += 1
         truth_vcf_records.append(record)
 
         # A true SNP called as ambiguous code
         assert ref_seq[999] == "T"
         eval_seq[999] = "Y"
-        record = vcf_record.VcfRecord(f"MN908947.3\t1000\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["SNP_true_alt"]["Called_wrong_IUPAC"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t1000\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_wrong_IUPAC] += 1
         truth_vcf_records.append(record)
 
         # A true SNP called as indel
         assert ref_seq[1199] == "G"
         eval_seq[1199] = "GG"
-        record = vcf_record.VcfRecord(f"MN908947.3\t1200\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["SNP_true_alt"]["Called_wrong_indel"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t1200\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        # The alignment results in a bp indel, which is incorrect. And at the
+        # SNP it's the same as the ref.
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_indel] += 1
+        stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_ref] += 1
         truth_vcf_records.append(record)
+
+        # Update the all ref counts
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 6
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = (
+            total_in_primer - 1
+        )
     elif test_type == "SNP_true_mixed":
         # True positive HET where ref is called
         assert ref_seq[199] == "T"
-        record = vcf_record.VcfRecord(f"MN908947.3\t200\t.\tT\tA\t42.42\tHET\t.\tGT\t0/1")
-        stats["All"]["SNP_true_mixed"]["Called_ref"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t200\t.\tT\tA\t42.42\tHET\t.\tGT\t0/1"
+        )
+        stats["All"][msa.StatRow.SNP_true_mixed][msa.StatCol.Called_ref] += 1
         truth_vcf_records.append(record)
 
         # A true het call called as an N. Is in primer
         assert ref_seq[399] == "T"
-        record = vcf_record.VcfRecord(f"MN908947.3\t400\t.\tT\tG\t42.42\tHET\t.\tGT\t0/1")
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t400\t.\tT\tG\t42.42\tHET\t.\tGT\t0/1"
+        )
         eval_seq[399] = "N"
-        stats["All"]["SNP_true_mixed"]["Called_N"] += 1
-        stats["Primer"]["SNP_true_mixed"]["Called_N"] += 1
+        stats["All"][msa.StatRow.SNP_true_mixed][msa.StatCol.Called_N] += 1
+        stats["Primer"][msa.StatRow.SNP_true_mixed][msa.StatCol.Called_N] += 1
         truth_vcf_records.append(record)
 
         # True positive HET where neither allele is the ref
         # And this is in a primer, so also adds to P_SNP_true_mixed
         assert ref_seq[599] == "G"
         eval_seq[599] = "Y"
-        record = vcf_record.VcfRecord(f"MN908947.3\t600\t.\tG\tC,T\t42.42\tHET\t.\tGT\t1/2")
-        stats["All"]["SNP_true_mixed"]["Called_correct_IUPAC"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t600\t.\tG\tC,T\t42.42\tHET\t.\tGT\t1/2"
+        )
+        stats["All"][msa.StatRow.SNP_true_mixed][msa.StatCol.Called_correct_IUPAC] += 1
         truth_vcf_records.append(record)
 
         # True positive HET called with wrong amibiguous code
         assert ref_seq[799] == "G"
-        eval_seq[799] = "R" # = A or G
-        record = vcf_record.VcfRecord(f"MN908947.3\t800\t.\tG\tC\t42.42\tHET\t.\tGT\t0/1")
-        stats["All"]["SNP_true_mixed"]["Called_wrong_IUPAC"] += 1
+        eval_seq[799] = "R"  # = A or G
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t800\t.\tG\tC\t42.42\tHET\t.\tGT\t0/1"
+        )
+        stats["All"][msa.StatRow.SNP_true_mixed][msa.StatCol.Called_wrong_IUPAC] += 1
         truth_vcf_records.append(record)
 
-        # A true HET called as indel
+        ## A true HET called as indel
         assert ref_seq[999] == "T"
         eval_seq[999] = "TA"
-        record = vcf_record.VcfRecord(f"MN908947.3\t1000\t.\tT\tA\t42.42\tHET\t.\tGT\t0/1")
-        stats["All"]["SNP_true_mixed"]["Called_wrong_indel"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t1000\t.\tT\tA\t42.42\tHET\t.\tGT\t0/1"
+        )
+        stats["All"][msa.StatRow.SNP_true_mixed][msa.StatCol.Called_ref] += 1
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_indel] += 1
         truth_vcf_records.append(record)
-    elif test_type == "unknown_truth":
+
+        # Update the all ref counts
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 5
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = (
+            total_in_primer - 1
+        )
+    elif test_type == "Unknown_truth":
         # Unknown position called as ref
         assert ref_seq[199] == "T"
-        record = vcf_record.VcfRecord(f"MN908947.3\t199\t.\tT\tA\t42.42\tUNSURE\t.\tGT\t0/1")
-        stats["All"]["unknown_truth"]["Called_ref"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t199\t.\tT\tA\t42.42\tUNSURE\t.\tGT\t0/1"
+        )
+        stats["All"][msa.StatRow.Unknown_truth][msa.StatCol.Called_ref] += 1
         truth_vcf_records.append(record)
 
         # Unknown position called as snp
         assert ref_seq[399] == "T"
-        record = vcf_record.VcfRecord(f"MN908947.3\t400\t.\tT\tG\t42.42\tUNSURE\t.\tGT\t0/1")
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t400\t.\tT\tG\t42.42\tUNSURE\t.\tGT\t0/1"
+        )
         eval_seq[399] = "G"
-        stats["All"]["unknown_truth"]["Called_wrong_alt"] += 1
-        stats["Primer"]["unknown_truth"]["Called_wrong_alt"] += 1
+        stats["All"][msa.StatRow.Unknown_truth][msa.StatCol.Called_other] += 1
+        stats["Primer"][msa.StatRow.Unknown_truth][msa.StatCol.Called_other] += 1
         truth_vcf_records.append(record)
 
         # Unknown position called as N
         assert ref_seq[599] == "G"
         eval_seq[599] = "N"
-        record = vcf_record.VcfRecord(f"MN908947.3\t600\t.\tG\tC,T\t42.42\tUNSURE\t.\tGT\t1/2")
-        stats["All"]["unknown_truth"]["Called_N"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t600\t.\tG\tC,T\t42.42\tUNSURE\t.\tGT\t1/2"
+        )
+        stats["All"][msa.StatRow.Unknown_truth][msa.StatCol.Called_N] += 1
         truth_vcf_records.append(record)
 
         # Unknown position called as amibiguous code
         assert ref_seq[799] == "G"
-        eval_seq[799] = "R" # = A or G
-        record = vcf_record.VcfRecord(f"MN908947.3\t800\t.\tG\tC\t42.42\tUNSURE\t.\tGT\t0/1")
-        stats["All"]["unknown_truth"]["Called_wrong_IUPAC"] += 1
+        eval_seq[799] = "R"  # = A or G
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t800\t.\tG\tC\t42.42\tUNSURE\t.\tGT\t0/1"
+        )
+        stats["All"][msa.StatRow.Unknown_truth][msa.StatCol.Called_other] += 1
         truth_vcf_records.append(record)
 
         # Unknown position called as indel
         assert ref_seq[999] == "T"
         eval_seq[999] = "TA"
-        record = vcf_record.VcfRecord(f"MN908947.3\t1000\t.\tT\tA\t42.42\tUNSURE\t.\tGT\t0/1")
-        stats["All"]["unknown_truth"]["Called_wrong_indel"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t1000\t.\tT\tA\t42.42\tUNSURE\t.\tGT\t0/1"
+        )
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_indel] += 1
+        stats["All"][msa.StatRow.Unknown_truth][msa.StatCol.Called_ref] += 1
         truth_vcf_records.append(record)
+
+        # Update the all ref counts
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 5
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = (
+            total_in_primer - 1
+        )
     elif test_type == "True_indel":
         # A true indel called as ref
         assert ref_seq[199] == "T"
-        record = vcf_record.VcfRecord(f"MN908947.3\t200\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["True_indel"]["Called_ref"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t200\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
         truth_vcf_records.append(record)
 
         # A true indel called correct alt. Also is in a primer
         assert ref_seq[399] == "T"
         eval_seq[399] = "TA"
-        record = vcf_record.VcfRecord(f"MN908947.3\t400\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["True_indel"]["Called_correct_alt"] += 1
-        stats["Primer"]["True_indel"]["Called_correct_alt"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t400\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_correct_alt] += 1
+        stats["Primer"][msa.StatRow.True_indel][msa.StatCol.Called_correct_alt] += 1
         truth_vcf_records.append(record)
 
-        # A true indel called wrong alt
+        # A true indel called as an incorrect SNP
         assert ref_seq[599] == "G"
         eval_seq[599] = "T"
-        record = vcf_record.VcfRecord(f"MN908947.3\t600\t.\tG\tGA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["True_indel"]["Called_wrong_indel"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t600\t.\tG\tGA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_alt] += 1
+        stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
         truth_vcf_records.append(record)
 
         # A true indel called as N
@@ -218,28 +272,59 @@ def make_test_data(outdir, test_type):
         assert ref_seq[800] == "G"
         eval_seq[799] = "N"
         eval_seq[800] = "N"
-        record = vcf_record.VcfRecord(f"MN908947.3\t800\t.\tGG\tG\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["True_indel"]["Called_wrong_indel"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t800\t.\tGG\tG\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_N] += 1
         truth_vcf_records.append(record)
 
         # A true indel called as ambiguous code
         assert ref_seq[999] == "T"
         eval_seq[999] = "Y"
-        record = vcf_record.VcfRecord(f"MN908947.3\t1000\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["True_indel"]["Called_wrong_indel"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t1000\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
         truth_vcf_records.append(record)
 
         # True indel called with wrong indel
         assert ref_seq[1199] == "G"
         eval_seq[1199] = "GA"
-        record = vcf_record.VcfRecord(f"MN908947.3\t1200\t.\tG\tGC\t42.42\tPASS\t.\tGT\t1/1")
-        stats["All"]["True_indel"]["Called_wrong_indel"] += 1
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t1200\t.\tG\tGC\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_IUPAC] += 1
+        stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
         truth_vcf_records.append(record)
+
+        # Update the all ref counts
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 4
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_in_primer
     elif test_type == "Dropped_amplicon":
-        # amplicon 2 is 320-725 (0-based)
-        record = vcf_record.VcfRecord(f"MN908947.3\t321\t.\tG\tN\t42.42\tDROPPED_AMP\tAMP_START=320;AMP_END=725\tGT\t1/1")
+        # Drop amplicon 2. Is at 320-725 (0-based)
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t321\t.\tG\tN\t42.42\tDROPPED_AMP\tAMP_START=320;AMP_END=725\tGT\t1/1"
+        )
         truth_vcf_records.append(record)
         eval_seq[320:726] = "N" * (726 - 320)
+        stats["All"][msa.StatRow.Dropped_amplicon][msa.StatCol.Dropped_amplicon] += (
+            726 - 320
+        )
+        stats["Primer"][msa.StatRow.Dropped_amplicon][
+            msa.StatCol.Dropped_amplicon
+        ] += 91
+
+        # Have consensus incorrectly drop most of amplicon 4. Is at 943-1336
+        eval_seq[950:1300] = "N" * 350
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Dropped_amplicon] += 350
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Dropped_amplicon] += 61
+
+        # Update the all ref counts
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = (
+            total_ref - (726 - 320) - 350
+        )
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = 4756
     else:
         raise NotImplementedError(f"Not implemented: {test_type}")
 
@@ -248,12 +333,11 @@ def make_test_data(outdir, test_type):
             "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tsample_1",
             *truth_vcf_records,
             sep="\n",
-            file=f
+            file=f,
         )
     with open(files["fasta_to_eval"], "w") as f:
         print(">to_eval", "".join(eval_seq), sep="\n", file=f)
-    one_run_evaluator.write_stats_counts(stats, files["expect_stats_tsv"])
-    #one_run_evaluator.write_per_record_breakdown(stats, files["expect_per_record_tsv"])
+    msa.write_stats_summary_tsv(stats, files["expect_stats_tsv"])
     return files
 
 
@@ -272,31 +356,40 @@ def eval_one_fasta_test(outdir, test_type):
         files["ref_fasta"],
         files["truth_vcf"],
         files["primers_tsv"],
+        debug=True,
+        force=False,
     )
     got_stats_tsv = os.path.join(results_dir, "results.tsv")
     assert filecmp.cmp(got_stats_tsv, files["expect_stats_tsv"], shallow=False)
-    #got_per_record_tsv = os.path.join(results_dir, "per_record_breakdown.tsv")
-    #assert filecmp.cmp(got_per_record_tsv, files["expect_per_record_tsv"], shallow=False)
-    #utils.syscall(f"rm -r {outdir}")
+    assert os.path.exists(os.path.join(results_dir, "per_position.tsv"))
+    utils.syscall(f"rm -r {outdir}")
 
 
 def test_eval_one_fasta_no_vars():
     eval_one_fasta_test("tmp.eval_one_fasta_no_vars", test_type="No_vars")
 
+
 def test_eval_one_fasta_true_ref():
     eval_one_fasta_test("tmp.eval_one_fasta_true_ref", test_type="true_ref")
+
 
 def test_eval_one_fasta_SNP_true_alt():
     eval_one_fasta_test("tmp.eval_one_fasta_SNP_true_alt", test_type="SNP_true_alt")
 
+
 def test_eval_one_fasta_SNP_true_mixed():
     eval_one_fasta_test("tmp.eval_one_fasta_SNP_true_mixed", test_type="SNP_true_mixed")
 
+
 def test_eval_one_fasta_unknown_truth():
-    eval_one_fasta_test("tmp.eval_one_fasta_unknown_truth", test_type="unknown_truth")
+    eval_one_fasta_test("tmp.eval_one_fasta_unknown_truth", test_type="Unknown_truth")
+
 
 def test_eval_one_fasta_True_indel():
     eval_one_fasta_test("tmp.eval_one_fasta_True_indel", test_type="True_indel")
 
+
 def test_eval_one_fasta_Dropped_amplicon():
-    eval_one_fasta_test("tmp.eval_one_fasta_Dropped_amplicon", test_type="Dropped_amplicon")
+    eval_one_fasta_test(
+        "tmp.eval_one_fasta_Dropped_amplicon", test_type="Dropped_amplicon"
+    )

@@ -10,6 +10,7 @@ __all__ = [
     "amplicon_scheme",
     "built_in_data",
     "iupac",
+    "msa",
     "one_run_evaluator",
     "tasks",
     "utils",

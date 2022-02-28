@@ -46,3 +46,18 @@ def test_apply_variants_to_genome():
     vcf_file = os.path.join(data_dir, "apply_variants_to_genome.bad.vcf")
     with pytest.raises(Exception):
         utils.apply_variants_to_genome(vcf_file, out_fasta, ref_fasta=ref_fasta)
+
+
+def test_string_to_gaps():
+    assert utils.string_to_gaps("A", 1) == []
+    assert utils.string_to_gaps("AN", 1) == [(1, 1)]
+    assert utils.string_to_gaps("AN", 2) == []
+    assert utils.string_to_gaps("ANN", 2) == [(1, 2)]
+    assert utils.string_to_gaps("ANN", 3) == []
+    assert utils.string_to_gaps("ANA", 1) == [(1, 1)]
+    assert utils.string_to_gaps("NANA", 1) == [(0, 0), (2, 2)]
+    assert utils.string_to_gaps("NAANNNNANN", 1) == [(0, 0), (3, 6), (8, 9)]
+    assert utils.string_to_gaps("NAANNNNANN", 2) == [(3, 6), (8, 9)]
+    assert utils.string_to_gaps("NAANNNNANN", 3) == [(3, 6)]
+    assert utils.string_to_gaps("NAANNNNANN", 4) == [(3, 6)]
+    assert utils.string_to_gaps("NAANNNNANN", 5) == []
