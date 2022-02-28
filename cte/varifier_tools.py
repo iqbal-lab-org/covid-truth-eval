@@ -3,7 +3,7 @@ import os
 
 import cluster_vcf_records
 
-from cte import variants, utils
+from cte import utils
 
 
 def varifier_vcf_to_counts_and_errors(

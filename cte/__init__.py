@@ -14,7 +14,6 @@ __all__ = [
     "one_run_evaluator",
     "tasks",
     "utils",
-    "variants",
     "varifier_tools",
 ]
 
