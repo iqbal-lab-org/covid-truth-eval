@@ -12,6 +12,8 @@ ambiguous_codes = {
     "N": {"A", "C", "G", "T"},
 }
 
+rev_ambiguous_codes = {"".join(sorted(list(v))): k for k, v in ambiguous_codes.items()}
+
 def expand_nucleotide_list(l):
     expanded = set()
     for x in l:
