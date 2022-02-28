@@ -25,6 +25,7 @@ def eval_one_fasta(
     logging.info(f"Using truth VCF: {truth_vcf}")
 
     stats_summary_tsv_out = os.path.join(outdir, "results.tsv")
+    stats_summary_json_out = os.path.join(outdir, "results.json")
     per_position_tsv_out = os.path.join(outdir, "per_position.tsv")
     msa_dir = os.path.join(outdir, "MSA")
     truth_fasta = os.path.join(outdir, "truth.fasta")
@@ -43,5 +44,6 @@ def eval_one_fasta(
     multi_aln.add_eval_dropped_amps(amp_scheme)
     multi_aln.gather_stats(amp_scheme, per_pos_tsv=per_position_tsv_out)
     multi_aln.write_stats_summary_tsv(stats_summary_tsv_out)
+    multi_aln.write_stats_summary_json(stats_summary_json_out)
     logging.info(f"Finished evaluating {fasta_to_eval}")
     return multi_aln.stats

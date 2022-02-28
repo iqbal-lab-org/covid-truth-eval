@@ -1,5 +1,6 @@
 import copy
 from enum import Enum, auto
+import json
 import os
 
 import cluster_vcf_records
@@ -53,6 +54,17 @@ def write_stats_summary_tsv(stats, outfile):
                 sep="\t",
                 file=f,
             )
+
+
+def write_stats_summary_json(stats, outfile):
+    to_print = {"All": {}, "Primer": {}}
+    for all_or_primer in to_print:
+        for row, d in stats[all_or_primer].items():
+            to_print[all_or_primer][row.name] = {k.name: v for k, v in d.items()}
+
+
+    with open(outfile, "w") as f:
+        json.dump(to_print, f, indent=2)
 
 
 # Some notes on working out which rows and columns. There are a lot
@@ -302,3 +314,9 @@ class Msa:
 
     def write_stats_summary_tsv(self, outfile):
         write_stats_summary_tsv(self.stats, outfile)
+
+
+    def write_stats_summary_json(self, outfile):
+        write_stats_summary_json(self.stats, outfile)
+
+

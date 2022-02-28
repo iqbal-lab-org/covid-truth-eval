@@ -19,6 +19,7 @@ def make_test_data(outdir, test_type):
         "truth_vcf": os.path.join(outdir, "truth.vcf"),
         "fasta_to_eval": os.path.join(outdir, "to_eval.fa"),
         "expect_stats_tsv": os.path.join(outdir, "expect_stats.tsv"),
+        "expect_stats_json": os.path.join(outdir, "expect_stats.json"),
         "expect_per_record_tsv": os.path.join(outdir, "expect_record_breakdown.tsv"),
         "primers_tsv": built_in_data.COVID_PRIMER_TSVS["COVID-ARTIC-V3"],
     }
@@ -362,6 +363,7 @@ def eval_one_fasta_test(outdir, test_type):
     got_stats_tsv = os.path.join(results_dir, "results.tsv")
     assert filecmp.cmp(got_stats_tsv, files["expect_stats_tsv"], shallow=False)
     assert os.path.exists(os.path.join(results_dir, "per_position.tsv"))
+    assert os.path.exists(os.path.join(results_dir, "results.json"))
     utils.syscall(f"rm -r {outdir}")
 
 
