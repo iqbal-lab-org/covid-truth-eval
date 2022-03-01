@@ -8,21 +8,9 @@ apt-add-repository universe
 apt-get update
 
 apt-get install -y \
-  build-essential \
-  cmake \
-  curl \
-  git \
-  libbz2-dev \
-  libcurl4-gnutls-dev \
-  liblzma-dev \
-  libssl-dev \
   mafft \
   python3-pip \
-  python3-setuptools \
-  tabix \
-  libvcflib-tools \
-  wget \
-  zlib1g-dev
+  python3-setuptools
 
 
 if [ ! -d $install_root ]; then
