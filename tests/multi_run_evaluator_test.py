@@ -61,7 +61,6 @@ def test_evaluate_runs():
         print("".join(ref_seq), file=f)
 
     truth_vcfs = []
-    primers = []
     eval_fastas = []
 
     truth_vcfs.append(os.path.join(tmp_data_root, "truth.a.vcf"))

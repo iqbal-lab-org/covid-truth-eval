@@ -72,7 +72,7 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta, debug=False):
             f"Finished processing run {run_name} {completed+1}/{len(manifest_data)}"
         )
 
-    logging.info(f"Finished processing all runs")
+    logging.info("Finished processing all runs")
     per_run_results_tsv = os.path.join(outdir, "results_per_run.tsv")
     logging.info(f"Writing per run results TSV {per_run_results_tsv}")
     with open(per_run_results_tsv, "w") as f:
