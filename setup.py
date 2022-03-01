@@ -8,7 +8,7 @@ with open("requirements.txt") as f:
 setup(
     name="cte",
     version="0.0.1",
-    description="Evaluate accuracy of Covid consensus sequence"
+    description="Evaluate accuracy of Covid consensus sequence",
     packages=find_packages(exclude=["tests"]),
     package_data={'cte': ['data/*']},
     author="Martin Hunt",
