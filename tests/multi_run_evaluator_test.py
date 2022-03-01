@@ -140,4 +140,8 @@ def test_evaluate_runs():
     got_tsv = os.path.join(outdir, "results.tsv")
     assert filecmp.cmp(got_tsv, expect_tsv, shallow=False)
 
+    expect_tsv = os.path.join(data_dir, "evaluate_runs.expect_results_per_run.tsv")
+    got_tsv = os.path.join(outdir, "results_per_run.tsv")
+    assert filecmp.cmp(got_tsv, expect_tsv, shallow=False)
+
     utils.syscall(f"rm -r {outdir} {tmp_data_root}")

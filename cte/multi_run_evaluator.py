@@ -37,6 +37,7 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta, debug=False):
     per_run_results = {}
     results_totals = None
     completed = 0
+    per_sample_tsv_lines = []
 
     for run_name, run_data in sorted(manifest_data.items()):
         logging.info("=" * 60)
@@ -53,6 +54,13 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta, debug=False):
             debug=debug,
         )
         per_run_results[run_name] = msa.stats_to_json_friendly(new_results)
+
+        tsv_lines = msa.stats_to_summary_tsv_lines(new_results, run_name)
+        if len(per_sample_tsv_lines) == 0:
+            per_sample_tsv_lines.extend(tsv_lines)
+        else:
+            per_sample_tsv_lines.extend(tsv_lines[1:])
+
         if results_totals is None:
             results_totals = copy.deepcopy(new_results)
         else:
@@ -65,6 +73,11 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta, debug=False):
         )
 
     logging.info(f"Finished processing all runs")
+    per_run_results_tsv = os.path.join(outdir, "results_per_run.tsv")
+    logging.info(f"Writing per run results TSV {per_run_results_tsv}")
+    with open(per_run_results_tsv, "w") as f:
+        for row in per_sample_tsv_lines:
+            print(*row, sep="\t", file=f)
     results_tsv = os.path.join(outdir, "results.tsv")
     logging.info(f"Writing summary results TSV {results_tsv}")
     msa.write_stats_summary_tsv(results_totals, results_tsv)

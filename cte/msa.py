@@ -42,18 +42,30 @@ def make_empty_stats_dict():
     return {"All": copy.deepcopy(stats), "Primer": copy.deepcopy(stats)}
 
 
+def stats_to_summary_tsv_lines(stats, run_name=None):
+    if run_name is None:
+        lines = [[]]
+        run_name = []
+    else:
+        lines = [["Name"]]
+        run_name = [run_name]
+
+    lines[0] += ["Truth"] + [x.name for x in StatCol]
+
+    for row in StatRow:
+        lines.append(run_name + [row.name] + [stats["All"][row][x] for x in StatCol])
+    for row in StatRow:
+        lines.append(
+            run_name + [f"P_{row.name}"] + [stats["Primer"][row][x] for x in StatCol]
+        )
+    return lines
+
+
 def write_stats_summary_tsv(stats, outfile):
+    lines = stats_to_summary_tsv_lines(stats)
     with open(outfile, "w") as f:
-        print("Truth", *[x.name for x in StatCol], sep="\t", file=f)
-        for row in StatRow:
-            print(row.name, *[stats["All"][row][x] for x in StatCol], sep="\t", file=f)
-        for row in StatRow:
-            print(
-                f"P_{row.name}",
-                *[stats["Primer"][row][x] for x in StatCol],
-                sep="\t",
-                file=f,
-            )
+        for row in lines:
+            print(*row, sep="\t", file=f)
 
 
 def stats_to_json_friendly(stats_in):
