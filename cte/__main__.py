@@ -11,11 +11,6 @@ def main(args=None):
     )
 
     parser.add_argument("--version", action="version", version=cte.__version__)
-    parser.add_argument(
-        "--debug",
-        help="More verbose logging, and less file cleaning",
-        action="store_true",
-    )
 
     subparsers = parser.add_subparsers(title="Available commands", help="", metavar="")
 

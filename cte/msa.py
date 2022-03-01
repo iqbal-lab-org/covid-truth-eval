@@ -49,20 +49,23 @@ def write_stats_summary_tsv(stats, outfile):
             print(row.name, *[stats["All"][row][x] for x in StatCol], sep="\t", file=f)
         for row in StatRow:
             print(
-                f"P_{row}",
+                f"P_{row.name}",
                 *[stats["Primer"][row][x] for x in StatCol],
                 sep="\t",
                 file=f,
             )
 
 
+def stats_to_json_friendly(stats_in):
+    stats_out = {"All": {}, "Primer": {}}
+    for all_or_primer in stats_out:
+        for row, d in stats_in[all_or_primer].items():
+            stats_out[all_or_primer][row.name] = {k.name: v for k, v in d.items()}
+    return stats_out
+
+
 def write_stats_summary_json(stats, outfile):
-    to_print = {"All": {}, "Primer": {}}
-    for all_or_primer in to_print:
-        for row, d in stats[all_or_primer].items():
-            to_print[all_or_primer][row.name] = {k.name: v for k, v in d.items()}
-
-
+    to_print = stats_to_json_friendly(stats)
     with open(outfile, "w") as f:
         json.dump(to_print, f, indent=2)
 
@@ -315,8 +318,5 @@ class Msa:
     def write_stats_summary_tsv(self, outfile):
         write_stats_summary_tsv(self.stats, outfile)
 
-
     def write_stats_summary_json(self, outfile):
         write_stats_summary_json(self.stats, outfile)
-
-

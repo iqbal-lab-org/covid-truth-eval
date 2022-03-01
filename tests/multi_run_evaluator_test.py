@@ -19,12 +19,23 @@ def test_load_manifest_tsv():
     infile = os.path.join(data_dir, "load_manifest_tsv.tsv")
     got = multi_run_evaluator.load_manifest_tsv(infile)
     expect = {
-        "truth_a.vcf": {
-            "run1": {"fasta_to_eval": "run1.fa", "primers": "COVID-ARTIC-V3"},
-            "run2": {"fasta_to_eval": "run2.fa", "primers": "COVID-ARTIC-V4"},
+        "run1": {
+            "name": "run1",
+            "eval_fasta": "run1.fa",
+            "primers": "COVID-ARTIC-V3",
+            "truth_vcf": "truth_a.vcf",
         },
-        "truth_b.vcf": {
-            "run3": {"fasta_to_eval": "run3.fa", "primers": "COVID-ARTIC-V4"},
+        "run2": {
+            "name": "run2",
+            "eval_fasta": "run2.fa",
+            "primers": "COVID-ARTIC-V4",
+            "truth_vcf": "truth_a.vcf",
+        },
+        "run3": {
+            "name": "run3",
+            "eval_fasta": "run3.fa",
+            "primers": "COVID-ARTIC-V4",
+            "truth_vcf": "truth_b.vcf",
         },
     }
     assert got == expect
@@ -34,7 +45,7 @@ def test_evaluate_runs():
     # Make minimal test data for 3 runs. We're more interested in the overall
     # pipeline running on all runs, not the quality of results - that is tested
     # in one_run_evaluator_test. Spike in a couple of SNPs so we have something
-    # in VCF files
+    # in results other than all ref
     tmp_data_root = "tmp.evaluate_runs.data"
     utils.syscall(f"rm -rf {tmp_data_root}")
     os.mkdir(tmp_data_root)
@@ -129,7 +140,4 @@ def test_evaluate_runs():
     got_tsv = os.path.join(outdir, "results.tsv")
     assert filecmp.cmp(got_tsv, expect_tsv, shallow=False)
 
-    expect_tsv = os.path.join(data_dir, "evaluate_runs.expect_errors.tsv")
-    got_tsv = os.path.join(outdir, "errors.tsv")
-    assert filecmp.cmp(got_tsv, expect_tsv, shallow=False)
     utils.syscall(f"rm -r {outdir} {tmp_data_root}")
