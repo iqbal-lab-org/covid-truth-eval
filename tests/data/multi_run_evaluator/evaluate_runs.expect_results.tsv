@@ -1,13 +1,13 @@
-Truth	Called_ref	Called_correct_alt	Called_wrong_alt	Called_N	Called_correct_IUPAC	Called_wrong_IUPAC	Called_wrong_indel	Dropped_amplicon	Called_other
-True_ref	2846	0	0	0	0	0	0	0	0
-SNP_true_alt	0	2	2	0	0	0	0	0	0
-SNP_true_mixed	0	0	0	0	0	0	0	0	0
-Unknown_truth	0	0	0	0	0	0	0	0	0
-True_indel	0	0	0	0	0	0	0	0	0
-Dropped_amplicon	0	0	0	0	0	0	0	0	0
-P_True_ref	239	0	0	0	0	0	0	0	0
-P_SNP_true_alt	0	1	0	0	0	0	0	0	0
-P_SNP_true_mixed	0	0	0	0	0	0	0	0	0
-P_Unknown_truth	0	0	0	0	0	0	0	0	0
-P_True_indel	0	0	0	0	0	0	0	0	0
-P_Dropped_amplicon	0	0	0	0	0	0	0	0	0
+Truth	Called_ref	Called_correct_alt	Called_wrong_alt	Called_N	Called_correct_IUPAC	Called_wrong_IUPAC	Called_wrong_indel	Dropped_amplicon	Called_other	No_call_genome_ends
+True_ref	2846	0	0	0	0	0	0	0	0	0
+SNP_true_alt	0	2	2	0	0	0	0	0	0	0
+SNP_true_mixed	0	0	0	0	0	0	0	0	0	0
+Unknown_truth	0	0	0	0	0	0	0	0	0	0
+True_indel	0	0	0	0	0	0	0	0	0	0
+Dropped_amplicon	0	0	0	0	0	0	0	0	0	0
+P_True_ref	239	0	0	0	0	0	0	0	0	0
+P_SNP_true_alt	0	1	0	0	0	0	0	0	0	0
+P_SNP_true_mixed	0	0	0	0	0	0	0	0	0	0
+P_Unknown_truth	0	0	0	0	0	0	0	0	0	0
+P_True_indel	0	0	0	0	0	0	0	0	0	0
+P_Dropped_amplicon	0	0	0	0	0	0	0	0	0	0

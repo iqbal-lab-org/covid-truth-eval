@@ -28,6 +28,7 @@ class StatCol(Enum):
     Called_wrong_indel = auto()
     Dropped_amplicon = auto()
     Called_other = auto()
+    No_call_genome_ends = auto()
 
 
 ACGT = {"A", "C", "G", "T"}
@@ -144,7 +145,7 @@ CONS_FP_TO_COL["Z"] = StatCol.Dropped_amplicon
 
 def aln_bases_to_stats_row_and_col(ref, truth, cons):
     assert ref == "-" or ref in ACGT
-    if ref == "-" or truth == "-" or cons == "-":
+    if ref == "-" or truth == "-" or cons == "-" or cons == "e":
         if ref == truth:
             row = StatRow.True_ref
         elif truth == "Z":
@@ -155,6 +156,8 @@ def aln_bases_to_stats_row_and_col(ref, truth, cons):
             col = StatCol.Called_correct_alt
         elif cons == "Z":
             col = StatCol.Dropped_amplicon
+        elif cons == "e":
+            col = StatCol.No_call_genome_ends
         else:
             col = StatCol.Called_wrong_indel
     else:
@@ -168,6 +171,8 @@ def aln_bases_to_stats_row_and_col(ref, truth, cons):
 
             if cons == "Z":
                 col = StatCol.Dropped_amplicon
+            elif cons == "e":
+                col = StatCol.No_call_genome_ends
             elif cons == ref:
                 col = StatCol.Called_ref
             elif cons == "N":
@@ -273,11 +278,11 @@ class Msa:
     def make_coords_lookups(self):
         # make lookup of original ref coord -> coord in msa
         self.ref_coords = [i for i, base in enumerate(self.ref_aln) if base != "-"]
-        assert self.ref_coords[-1] + 1 == len(self.ref_aln)
+        assert self.ref_coords[-1] + 1 == len("".join(self.ref_aln).rstrip("-"))
 
         # lookup of original eval coord -> coord in msa
         self.eval_coords = [i for i, base in enumerate(self.eval_aln) if base != "-"]
-        assert self.eval_coords[-1] + 1 == len(self.eval_aln)
+        assert self.eval_coords[-1] + 1 == len("".join(self.eval_aln).rstrip("-"))
 
     def add_truth_dropped_amps(self, truth_vcf_file):
         assert self.ref_coords is not None
@@ -295,6 +300,16 @@ class Msa:
             #    self.ref_aln[self.ref_coords[i]] = "D"
             for i in range(self.ref_coords[record.POS], self.ref_coords[end + 1]):
                 self.truth_aln[i] = "Z"
+
+    def add_eval_ends_missing(self):
+        i = 0
+        while self.eval_aln[i] == "-" and i < len(self.eval_aln):
+            self.eval_aln[i] = "e"
+            i += 1
+        i = len(self.eval_aln) - 1
+        while self.eval_aln[i] == "-" and i > 0:
+            self.eval_aln[i] = "e"
+            i -= 1
 
     def add_eval_dropped_amps(self, amp_scheme, min_gap_length=50):
         eval_seq = "".join([x for x in self.eval_aln if x != "-"])

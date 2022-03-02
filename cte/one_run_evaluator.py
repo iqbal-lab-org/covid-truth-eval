@@ -34,11 +34,10 @@ def eval_one_fasta(
     os.mkdir(outdir)
     utils.apply_variants_to_genome(truth_vcf, truth_fasta, ref_fasta=ref_fasta)
     multi_aln = msa.Msa(ref_fasta, truth_fasta, fasta_to_eval)
-    logging.info(
-        "Making multiple sequence alignment (ref vs truth vs seq to evaluate)"
-    )
+    logging.info("Making multiple sequence alignment (ref vs truth vs seq to evaluate)")
     multi_aln.run_msa(msa_dir)
     logging.info("Gathering stats from MSA")
+    multi_aln.add_eval_ends_missing()
     multi_aln.make_coords_lookups()
     multi_aln.add_truth_dropped_amps(truth_vcf)
     multi_aln.add_eval_dropped_amps(amp_scheme)
