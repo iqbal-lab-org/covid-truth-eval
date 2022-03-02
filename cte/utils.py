@@ -6,6 +6,8 @@ import sys
 import cluster_vcf_records
 import pyfastaq
 
+from cte import iupac
+
 
 def syscall(command):
     logging.info(f"Run command: {command}")
@@ -83,21 +85,40 @@ def apply_variants_to_genome(vcf_file, out_fasta, ref_seq=None, ref_fasta=None):
     # Applying indels messes up the coords of any subsequent variant,
     # so start at the end and work backwards
     for vcf_record in reversed(vcf_records):
-        genotype = set(vcf_record.FORMAT["GT"].split("/"))
-        if len(genotype) != 1:
-            # FIXME
-            raise NotImplementedError()
+        if "DROPPED_AMP" in vcf_record.FILTER:
+            continue
+
         try:
-            allele_index = int(genotype.pop())
+            genotypes = {int(x) for x in vcf_record.FORMAT["GT"].split("/")}
         except:
             raise Exception(
-                f"Genotype must be int(s). Cannot use this line of VCF file: {vcf_record}"
+                f"Genotype(s) must be int(s). Cannot use this line of VCF file: {vcf_record}"
             )
-        if allele_index == 0:
-            logging.warning(
-                f"Genotype of zero in truth VCF. Is that deliberate? Ignoring the line: {vcf_record}"
-            )
-            continue
+
+        if "UNSURE" in vcf_record.FILTER:
+            allele = "N" * len(vcf_record.REF)
+        elif len(genotypes) == 1:
+            allele_index = genotypes.pop()
+            if allele_index == 0:
+                logging.warning(
+                    f"Genotype of zero in truth VCF. Is that deliberate? Ignoring the line: {vcf_record}"
+                )
+                continue
+            allele = vcf_record.ALT[allele_index - 1]
+        else:
+            # We only allow HET SNPs, not indels.
+            if len(vcf_record.REF) != 1 or {len(x) for x in vcf_record.ALT} != {1}:
+                raise Exception(
+                    f"Heterozygous SNPs are not allowed. Cannot continue. VCF line:\n{vcf_record}"
+                )
+
+            alleles = []
+            if 0 in genotypes:
+                alleles.append(vcf_record.REF)
+            for i in genotypes:
+                if i > 0:
+                    alleles.append(vcf_record.ALT[i - 1])
+            allele = iupac.rev_ambiguous_codes["".join(sorted(alleles))]
 
         # If the current record overlaps the previous one, stop.
         # Should not happen in a nice truth VCF.
@@ -110,7 +131,6 @@ def apply_variants_to_genome(vcf_file, out_fasta, ref_seq=None, ref_fasta=None):
             )
 
         previous_ref_start = vcf_record.POS
-        allele = vcf_record.ALT[allele_index - 1]
         start, end = vcf_record.POS, vcf_record.ref_end_pos() + 1
         assert ref_seq[start:end] == "".join(new_seq[start:end])
         new_seq[start:end] = [allele]
@@ -118,3 +138,21 @@ def apply_variants_to_genome(vcf_file, out_fasta, ref_seq=None, ref_fasta=None):
     with open(out_fasta, "w") as f:
         new_seq = pyfastaq.sequences.Fasta(f"{ref_seq.id}.mutated", "".join(new_seq))
         print(new_seq, file=f)
+
+
+def string_to_gaps(string, min_gap_length):
+    gaps = []
+    gap_start = None
+    for i, base in enumerate(string):
+        if base == "N":
+            if gap_start is None:
+                gap_start = i
+        elif gap_start is not None:
+            if i - gap_start >= min_gap_length:
+                gaps.append((gap_start, i - 1))
+            gap_start = None
+
+    if gap_start is not None and i - gap_start + 1 >= min_gap_length:
+        gaps.append((gap_start, i))
+
+    return gaps

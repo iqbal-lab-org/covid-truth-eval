@@ -10,4 +10,6 @@ def run(options):
             f"Option --force used. Deleting existing output directory {options.outdir}"
         )
         utils.syscall(f"rm -rf {options.outdir}")
-    multi_run_evaluator.evaluate_runs(options.manifest_tsv, options.outdir, options.ref_fasta)
+    multi_run_evaluator.evaluate_runs(
+        options.manifest_tsv, options.outdir, options.ref_fasta, debug=options.debug
+    )

@@ -11,11 +11,6 @@ def main(args=None):
     )
 
     parser.add_argument("--version", action="version", version=cte.__version__)
-    parser.add_argument(
-        "--debug",
-        help="More verbose logging, and less file cleaning",
-        action="store_true",
-    )
 
     subparsers = parser.add_subparsers(title="Available commands", help="", metavar="")
 
@@ -50,7 +45,7 @@ def main(args=None):
         parents=[common_parser],
         help="Evaluate one run",
         usage="cte eval_one_run [options] --outdir out --truth_vcf truth.vcf --fasta_to_eval to_eval.fa --primers name",
-        description="Evaluate one conensus sequence",
+        description="Evaluate one consensus sequence",
     )
     subparser_eval_one_run.add_argument(
         "--truth_vcf",
@@ -77,9 +72,9 @@ def main(args=None):
     subparser_eval_runs = subparsers.add_parser(
         "eval_runs",
         parents=[common_parser],
-        help="Evaluate multiple runs and/or consensus sequences",
+        help="Evaluate multiple consensus sequences",
         usage="cte eval_runs [options] --outdir out manifest.tsv",
-        description="Evaluate multiple runs and/or consensus sequences",
+        description="Evaluate multiple consensus sequences",
     )
     subparser_eval_runs.add_argument(
         "manifest_tsv",
@@ -94,7 +89,7 @@ def main(args=None):
         datefmt="%Y-%m-%dT%H:%M:%S",
     )
     log = logging.getLogger()
-    if args.debug:
+    if hasattr(args, 'debug') and args.debug:
         log.setLevel(logging.DEBUG)
     else:
         log.setLevel(logging.INFO)

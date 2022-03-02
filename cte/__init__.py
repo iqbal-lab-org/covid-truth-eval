@@ -7,12 +7,13 @@ except:
 
 
 __all__ = [
+    "amplicon_scheme",
     "built_in_data",
+    "iupac",
+    "msa",
     "one_run_evaluator",
-    "primers",
     "tasks",
     "utils",
-    "varifier_tools",
 ]
 
 from cte import *

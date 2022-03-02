@@ -1,91 +1,451 @@
 {
-  "tmp.evaluate_runs.data/truth.a.vcf": {
-    "name0": {
-      "snp": {
-        "TP": 1,
-        "FP": 0,
-        "FN": 0
+  "name0": {
+    "All": {
+      "True_ref": {
+        "Called_ref": 949,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "indel": {
-        "TP": 0,
-        "FP": 0,
-        "FN": 0
+      "SNP_true_alt": {
+        "Called_ref": 0,
+        "Called_correct_alt": 1,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "primer_snp": {
-        "TP": 0,
-        "FP": 0,
-        "FN": 0
+      "SNP_true_mixed": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "primer_indel": {
-        "TP": 0,
-        "FP": 0,
-        "FN": 0
+      "Unknown_truth": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "Errors": {
-        "FP": [],
-        "FN": []
+      "True_indel": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Dropped_amplicon": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       }
     },
-    "name1": {
-      "snp": {
-        "TP": 0,
-        "FP": 1,
-        "FN": 1
+    "Primer": {
+      "True_ref": {
+        "Called_ref": 80,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "indel": {
-        "TP": 0,
-        "FP": 0,
-        "FN": 0
+      "SNP_true_alt": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "primer_snp": {
-        "TP": 0,
-        "FP": 0,
-        "FN": 0
+      "SNP_true_mixed": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "primer_indel": {
-        "TP": 0,
-        "FP": 0,
-        "FN": 0
+      "Unknown_truth": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "Errors": {
-        "FP": [
-          "ref\t501\t0\tA\tG\t.\tPASS\t.\tGT:VFR_ED_RA:VFR_ED_TR:VFR_ED_TA:VFR_ALLELE_LEN:VFR_ALLELE_MATCH_COUNT:VFR_ALLELE_MATCH_FRAC:VFR_IN_MASK:VFR_RESULT\t1/1:1:1:1:1:0:0.0:0:FP"
-        ],
-        "FN": [
-          "ref\t501\t.\tA\tT\t42.42\tPASS\t.\tGT:VFR_ED_RA:VFR_ED_TR:VFR_ED_TA:VFR_ALLELE_LEN:VFR_ALLELE_MATCH_COUNT:VFR_ALLELE_MATCH_FRAC:VFR_IN_MASK:VFR_RESULT\t1/1:1:1:1:1:0:0.0:0:FP"
-        ]
+      "True_indel": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Dropped_amplicon": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       }
     }
   },
-  "tmp.evaluate_runs.data/truth.b.vcf": {
-    "name2": {
-      "snp": {
-        "TP": 1,
-        "FP": 1,
-        "FN": 1
+  "name1": {
+    "All": {
+      "True_ref": {
+        "Called_ref": 949,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "indel": {
-        "TP": 0,
-        "FP": 0,
-        "FN": 0
+      "SNP_true_alt": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 1,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "primer_snp": {
-        "TP": 1,
-        "FP": 0,
-        "FN": 0
+      "SNP_true_mixed": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "primer_indel": {
-        "TP": 0,
-        "FP": 0,
-        "FN": 0
+      "Unknown_truth": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       },
-      "Errors": {
-        "FP": [
-          "ref\t501\t0\tA\tG\t.\tPASS\t.\tGT:VFR_ED_RA:VFR_ED_TR:VFR_ED_TA:VFR_ALLELE_LEN:VFR_ALLELE_MATCH_COUNT:VFR_ALLELE_MATCH_FRAC:VFR_IN_MASK:VFR_RESULT\t1/1:1:1:1:1:0:0.0:0:FP"
-        ],
-        "FN": [
-          "ref\t501\t.\tA\tT\t42.42\tPASS\t.\tGT:VFR_ED_RA:VFR_ED_TR:VFR_ED_TA:VFR_ALLELE_LEN:VFR_ALLELE_MATCH_COUNT:VFR_ALLELE_MATCH_FRAC:VFR_IN_MASK:VFR_RESULT\t1/1:1:1:1:1:0:0.0:0:FP"
-        ]
+      "True_indel": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Dropped_amplicon": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      }
+    },
+    "Primer": {
+      "True_ref": {
+        "Called_ref": 80,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "SNP_true_alt": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "SNP_true_mixed": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Unknown_truth": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "True_indel": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Dropped_amplicon": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      }
+    }
+  },
+  "name2": {
+    "All": {
+      "True_ref": {
+        "Called_ref": 948,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "SNP_true_alt": {
+        "Called_ref": 0,
+        "Called_correct_alt": 1,
+        "Called_wrong_alt": 1,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "SNP_true_mixed": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Unknown_truth": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "True_indel": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Dropped_amplicon": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      }
+    },
+    "Primer": {
+      "True_ref": {
+        "Called_ref": 79,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "SNP_true_alt": {
+        "Called_ref": 0,
+        "Called_correct_alt": 1,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "SNP_true_mixed": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Unknown_truth": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "True_indel": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
+      },
+      "Dropped_amplicon": {
+        "Called_ref": 0,
+        "Called_correct_alt": 0,
+        "Called_wrong_alt": 0,
+        "Called_N": 0,
+        "Called_correct_IUPAC": 0,
+        "Called_wrong_IUPAC": 0,
+        "Called_wrong_indel": 0,
+        "Dropped_amplicon": 0,
+        "Called_other": 0,
+        "No_call_genome_ends": 0
       }
     }
   }
