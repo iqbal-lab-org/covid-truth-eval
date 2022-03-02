@@ -84,21 +84,20 @@ def main(args=None):
 
     args = parser.parse_args()
 
-    if hasattr(args, "func"):
-        args.func(args)
-    else:
-        parser.print_help()
-        return
-
     logging.basicConfig(
         format="[%(asctime)s cte %(levelname)s] %(message)s",
         datefmt="%Y-%m-%dT%H:%M:%S",
     )
     log = logging.getLogger()
-    if args.debug:
+    if hasattr(args, 'debug') and args.debug:
         log.setLevel(logging.DEBUG)
     else:
         log.setLevel(logging.INFO)
+
+    if hasattr(args, "func"):
+        args.func(args)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
