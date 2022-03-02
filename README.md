@@ -28,6 +28,7 @@ sudo docker build --network=host .
 
 [Releases](https://github.com/iqbal-lab-org/covid-truth-eval/releases)
 include a Singularity image to download.
+Each release has a file called `cte_vX.Y.Z.img`, where `X.Y.Z` is the release version.
 
 Alternatively, build your own Singularity image:
 
