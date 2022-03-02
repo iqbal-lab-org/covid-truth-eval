@@ -12,4 +12,5 @@ def run(options):
         options.truth_vcf,
         options.primers,
         force=options.force,
+        debug=options.debug,
     )

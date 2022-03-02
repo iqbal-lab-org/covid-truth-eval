@@ -44,5 +44,10 @@ def eval_one_fasta(
     multi_aln.gather_stats(amp_scheme, per_pos_tsv=per_position_tsv_out)
     multi_aln.write_stats_summary_tsv(stats_summary_tsv_out)
     multi_aln.write_stats_summary_json(stats_summary_json_out)
+    if debug:
+        logging.info("Debug option used, so not cleaning up intermediate files")
+    else:
+        logging.info("Deleting intermediate files")
+        utils.syscall(f"rm -r {msa_dir} {truth_fasta}")
     logging.info(f"Finished evaluating {fasta_to_eval}")
     return multi_aln.stats
