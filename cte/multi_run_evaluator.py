@@ -42,7 +42,7 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta, debug=False):
     for run_name, run_data in sorted(manifest_data.items()):
         logging.info("=" * 60)
         logging.info(
-            f"Start processing run {run_name} {completed+1}/{len(manifest_data)}"
+            f"Start processing run {completed+1}/{len(manifest_data)}: {run_name}"
         )
         run_outdir = os.path.join(processing_dir, run_name)
         new_results = one_run_evaluator.eval_one_fasta(
@@ -69,8 +69,9 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta, debug=False):
                     for col, value in new_results[all_or_primer][row].items():
                         results_totals[all_or_primer][row][col] += value
         logging.info(
-            f"Finished processing run {run_name} {completed+1}/{len(manifest_data)}"
+            f"Finished processing run {completed+1}/{len(manifest_data)}: {run_name}"
         )
+        completed += 1
 
     logging.info("=" * 60)
     logging.info("Finished processing all runs")
