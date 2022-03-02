@@ -296,8 +296,6 @@ class Msa:
             assert "AMP_START" in record.INFO and "AMP_END" in record.INFO
             end = int(record.INFO["AMP_END"])
             assert int(record.INFO["AMP_START"]) == record.POS
-            # for i in range(record.POS, end + 1):
-            #    self.ref_aln[self.ref_coords[i]] = "D"
             for i in range(self.ref_coords[record.POS], self.ref_coords[end + 1]):
                 self.truth_aln[i] = "Z"
 
