@@ -75,7 +75,7 @@ def make_test_data(outdir, test_type):
         # A true SNP (not het) called as ref
         assert ref_seq[199] == "T"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t200\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t200\t.\tT\tA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_ref] += 1
         truth_vcf_records.append(record)
@@ -84,7 +84,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[399] == "T"
         eval_seq[399] = "A"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t400\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t400\t.\tT\tA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_correct_alt] += 1
         stats["Primer"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_correct_alt] += 1
@@ -94,7 +94,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[599] == "G"
         eval_seq[599] = "T"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t600\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t600\t.\tG\tA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_wrong_alt] += 1
         truth_vcf_records.append(record)
@@ -103,7 +103,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[799] == "G"
         eval_seq[799] = "N"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t800\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t800\t.\tG\tA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_N] += 1
         truth_vcf_records.append(record)
@@ -112,7 +112,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[999] == "T"
         eval_seq[999] = "Y"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t1000\t.\tT\tA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t1000\t.\tT\tA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.SNP_true_alt][msa.StatCol.Called_wrong_IUPAC] += 1
         truth_vcf_records.append(record)
@@ -121,7 +121,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[1199] == "G"
         eval_seq[1199] = "GG"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t1200\t.\tG\tA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t1200\t.\tG\tA\t42.42\t.\t.\tGT\t1/1"
         )
         # The alignment results in a bp indel, which is incorrect. And at the
         # SNP it's the same as the ref.
@@ -243,7 +243,7 @@ def make_test_data(outdir, test_type):
         # A true indel called as ref
         assert ref_seq[199] == "T"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t200\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t200\t.\tT\tTA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
         truth_vcf_records.append(record)
@@ -252,7 +252,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[399] == "T"
         eval_seq[399] = "TA"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t400\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t400\t.\tT\tTA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_correct_alt] += 1
         stats["Primer"][msa.StatRow.True_indel][msa.StatCol.Called_correct_alt] += 1
@@ -262,7 +262,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[599] == "G"
         eval_seq[599] = "T"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t600\t.\tG\tGA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t600\t.\tG\tGA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_alt] += 1
         stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
@@ -274,7 +274,7 @@ def make_test_data(outdir, test_type):
         eval_seq[799] = "N"
         eval_seq[800] = "N"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t800\t.\tGG\tG\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t800\t.\tGG\tG\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
         stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_N] += 1
@@ -284,7 +284,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[999] == "T"
         eval_seq[999] = "Y"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t1000\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t1000\t.\tT\tTA\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
         truth_vcf_records.append(record)
@@ -293,7 +293,7 @@ def make_test_data(outdir, test_type):
         assert ref_seq[1199] == "G"
         eval_seq[1199] = "GA"
         record = vcf_record.VcfRecord(
-            "MN908947.3\t1200\t.\tG\tGC\t42.42\tPASS\t.\tGT\t1/1"
+            "MN908947.3\t1200\t.\tG\tGC\t42.42\t.\t.\tGT\t1/1"
         )
         stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_wrong_IUPAC] += 1
         stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
