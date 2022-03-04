@@ -83,7 +83,7 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta, debug=False):
     results_tsv = os.path.join(outdir, "results.tsv")
     logging.info(f"Writing summary results TSV {results_tsv}")
     msa.write_stats_summary_tsv(results_totals, results_tsv)
-    results_json = os.path.join(outdir, "results.json")
+    results_json = os.path.join(outdir, "per_run_results.json")
     logging.info(f"Writing summary results JSON {results_json}")
     with open(results_json, "w") as f:
         json.dump(per_run_results, f, indent=2)

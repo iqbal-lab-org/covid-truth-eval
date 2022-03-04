@@ -129,7 +129,7 @@ def test_evaluate_runs():
     outdir = "tmp.evaluate_runs"
     utils.syscall(f"rm -rf {outdir}")
     multi_run_evaluator.evaluate_runs(manifest_tsv, outdir, ref_fasta)
-    with open(os.path.join(outdir, "results.json")) as f:
+    with open(os.path.join(outdir, "per_run_results.json")) as f:
         got_results = json.load(f)
     with open(os.path.join(data_dir, "evaluate_runs.expect_results.json")) as f:
         expect_results = json.load(f)
