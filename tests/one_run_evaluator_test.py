@@ -267,7 +267,7 @@ def make_test_data(outdir, test_type):
         eval_seq[799] = "N"
         eval_seq[800] = "N"
         record = vcf_record.VcfRecord("MN908947.3\t800\t.\tGG\tG\t42.42\t.\t.\tGT\t1/1")
-        stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
+        stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_N] += 1
         stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_N] += 1
         truth_vcf_records.append(record)
 

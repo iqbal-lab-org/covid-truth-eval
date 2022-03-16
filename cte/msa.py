@@ -161,6 +161,8 @@ def aln_bases_to_stats_row_and_col(ref, truth, cons):
             col = StatCol.Dropped_amplicon
         elif cons == "e":
             col = StatCol.No_call_genome_ends
+        elif cons == "N":
+            col = StatCol.Called_N
         else:
             col = StatCol.Called_wrong_indel
     else:
