@@ -234,10 +234,21 @@ def make_test_data(outdir, test_type):
         stats["All"][msa.StatRow.Unknown_truth][msa.StatCol.Called_ref] += 1
         truth_vcf_records.append(record)
 
+        # Unknown position near then end, which doesn't get assembled
+        assert ref_seq[29833] == "T"
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t29834\t.\tT\tN\t42.42\tUNSURE\t.\tGT\t1/1"
+        )
+        truth_vcf_records.append(record)
+        eval_seq = eval_seq[:29830]
+        stats["All"][msa.StatRow.Unknown_truth][msa.StatCol.No_call_genome_ends] += 1
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.No_call_genome_ends] += 35
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.No_call_genome_ends] += 30
+
         # Update the all ref counts
-        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 5
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 41
         stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = (
-            total_in_primer - 1
+            total_in_primer - 31
         )
     elif test_type == "True_indel":
         # A true indel called as ref
@@ -299,9 +310,20 @@ def make_test_data(outdir, test_type):
         stats["All"][msa.StatRow.True_indel][msa.StatCol.Called_wrong_indel] += 1
         truth_vcf_records.append(record)
 
+        # Indel near then end, which doesn't get assembled
+        assert ref_seq[29833] == "T"
+        record = vcf_record.VcfRecord(
+            "MN908947.3\t29834\t.\tT\tTA\t42.42\tPASS\t.\tGT\t1/1"
+        )
+        truth_vcf_records.append(record)
+        eval_seq = eval_seq[:29830]
+        stats["All"][msa.StatRow.True_indel][msa.StatCol.No_call_genome_ends] += 1
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.No_call_genome_ends] += 36
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.No_call_genome_ends] += 30
+
         # Update the all ref counts
-        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 4
-        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_in_primer
+        stats["All"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_ref - 40
+        stats["Primer"][msa.StatRow.True_ref][msa.StatCol.Called_ref] = total_in_primer - 30
     elif test_type == "Dropped_amplicon":
         # Drop amplicon 2. Is at 320-725 (0-based)
         record = vcf_record.VcfRecord(

@@ -141,15 +141,18 @@ for x in AMBIG_NON_N:
     CONS_FP_TO_COL[x] = StatCol.Called_wrong_IUPAC
 CONS_FP_TO_COL["N"] = StatCol.Called_N
 CONS_FP_TO_COL["Z"] = StatCol.Dropped_amplicon
+CONS_FP_TO_COL["e"] = StatCol.No_call_genome_ends
 
 
 def aln_bases_to_stats_row_and_col(ref, truth, cons):
     assert ref == "-" or ref in ACGT
-    if ref == "-" or truth == "-" or cons == "-" or cons == "e":
+    if ref == "-" or truth == "-" or cons == "-":
         if ref == truth:
             row = StatRow.True_ref
         elif truth == "Z":
             row = StatRow.Dropped_amplicon
+        elif truth == "N":
+            row = StatRow.Unknown_truth
         else:
             row = StatRow.True_indel
         if cons == truth:
