@@ -89,7 +89,7 @@ def main(args=None):
         datefmt="%Y-%m-%dT%H:%M:%S",
     )
     log = logging.getLogger()
-    if hasattr(args, 'debug') and args.debug:
+    if hasattr(args, "debug") and args.debug:
         log.setLevel(logging.DEBUG)
     else:
         log.setLevel(logging.INFO)
