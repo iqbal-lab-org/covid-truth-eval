@@ -304,11 +304,12 @@ class Msa:
 
     def add_eval_ends_missing(self):
         i = 0
-        while self.eval_aln[i] == "-" and i < len(self.eval_aln):
+        missing_chars = {"-", "N"}
+        while self.eval_aln[i] in missing_chars and i < len(self.eval_aln):
             self.eval_aln[i] = "e"
             i += 1
         i = len(self.eval_aln) - 1
-        while self.eval_aln[i] == "-" and i > 0:
+        while self.eval_aln[i] in missing_chars and i > 0:
             self.eval_aln[i] = "e"
             i -= 1
 

@@ -240,7 +240,7 @@ def make_test_data(outdir, test_type):
             "MN908947.3\t29834\t.\tT\tN\t42.42\tUNSURE\t.\tGT\t1/1"
         )
         truth_vcf_records.append(record)
-        eval_seq = eval_seq[:29830]
+        eval_seq[29830:] = "N" * len(eval_seq[29830:])
         stats["All"][msa.StatRow.Unknown_truth][msa.StatCol.No_call_genome_ends] += 1
         stats["All"][msa.StatRow.True_ref][msa.StatCol.No_call_genome_ends] += 35
         stats["Primer"][msa.StatRow.True_ref][msa.StatCol.No_call_genome_ends] += 30
