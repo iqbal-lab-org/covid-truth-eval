@@ -10,6 +10,17 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(this_dir, "data", "msa_test")
 
 
+def test_aln_bases_to_stats_row_and_col():
+    f = msa.aln_bases_to_stats_row_and_col
+    row = msa.StatRow
+    col = msa.StatCol
+    assert f("A", "Z", "A") == (row.Dropped_amplicon, col.Called_ref)
+    assert f("A", "Z", "N") == (row.Dropped_amplicon, col.Called_N)
+    assert f("A", "Z", "Z") == (row.Dropped_amplicon, col.Dropped_amplicon)
+    assert f("A", "Z", "C") == (row.Dropped_amplicon, col.Called_other)
+    assert f("A", "Z", "e") == (row.Dropped_amplicon, col.No_call_genome_ends)
+
+
 def test_msa():
     # Basic test of Msa class. We test in more detail elsewhere with end-to-end
     # tests of the whole pipeline

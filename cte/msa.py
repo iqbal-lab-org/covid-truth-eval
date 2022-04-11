@@ -182,6 +182,8 @@ def aln_bases_to_stats_row_and_col(ref, truth, cons):
                 col = StatCol.Called_ref
             elif cons == "N":
                 col = StatCol.Called_N
+            elif row == StatRow.Dropped_amplicon:
+                col = StatCol.Called_other
             elif row == StatRow.Unknown_truth:
                 col = StatCol.Called_other
             elif row == StatRow.SNP_true_alt:
