@@ -49,8 +49,8 @@ def evaluate_runs(manifest_tsv, outdir, ref_fasta, debug=False):
             run_outdir,
             run_data["eval_fasta"],
             ref_fasta,
-            run_data["truth_vcf"],
             run_data["primers"],
+            truth_vcf=run_data["truth_vcf"],
             debug=debug,
         )
         per_run_results[run_name] = msa.stats_to_json_friendly(new_results)

@@ -9,8 +9,9 @@ def run(options):
         options.outdir,
         options.fasta_to_eval,
         options.ref_fasta,
-        options.truth_vcf,
         options.primers,
+        truth_vcf=options.truth_vcf,
+        truth_fasta=options.truth_fasta,
         force=options.force,
         debug=options.debug,
     )

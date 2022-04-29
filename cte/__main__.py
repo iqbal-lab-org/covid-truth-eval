@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import sys
 import cte
 
 
@@ -44,13 +45,17 @@ def main(args=None):
         "eval_one_run",
         parents=[common_parser],
         help="Evaluate one run",
-        usage="cte eval_one_run [options] --outdir out --truth_vcf truth.vcf --fasta_to_eval to_eval.fa --primers name",
+        usage="cte eval_one_run [options] <truth files options> --outdir out --fasta_to_eval to_eval.fa --primers name",
         description="Evaluate one consensus sequence",
     )
     subparser_eval_one_run.add_argument(
         "--truth_vcf",
-        required=True,
-        help="REQUIRED. Truth VCF file (with respect to the reference genome)",
+        help="Truth VCF file (with respect to the reference genome). If not provided, must provide --truth_fasta. If this option and --truth_fasta is used, then only dropped amplicon entries are used from the truth_vcf file",
+        metavar="FILENAME",
+    )
+    subparser_eval_one_run.add_argument(
+        "--truth_fasta",
+        help="Truth FASTA file. If not provided, must provide --truth_vcf",
         metavar="FILENAME",
     )
     subparser_eval_one_run.add_argument(
@@ -95,6 +100,16 @@ def main(args=None):
         log.setLevel(logging.INFO)
 
     if hasattr(args, "func"):
+        if (
+            args.func == cte.tasks.eval_one_run.run
+            and args.truth_fasta is None
+            and args.truth_vcf is None
+        ):
+            print(
+                "Must use --truth_fasta or --truth_vcf. Cannot continue",
+                file=sys.stderr,
+            )
+            sys.exit(1)
         args.func(args)
     else:
         parser.print_help()
