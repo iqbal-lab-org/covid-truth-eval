@@ -346,7 +346,14 @@ def make_test_data(outdir, test_type):
     return files
 
 
-def eval_one_fasta_test(outdir, test_type):
+def check_results_dir(results_dir, files):
+    got_stats_tsv = os.path.join(results_dir, "results.tsv")
+    assert filecmp.cmp(got_stats_tsv, files["expect_stats_tsv"], shallow=False)
+    assert os.path.exists(os.path.join(results_dir, "per_position.tsv"))
+    assert os.path.exists(os.path.join(results_dir, "results.json"))
+
+
+def eval_one_fasta_test(outdir, test_type, also_test_truth_fasta=False):
     utils.syscall(f"rm -rf {outdir}")
     os.mkdir(outdir)
     data_dir = os.path.join(outdir, "data")
@@ -359,15 +366,27 @@ def eval_one_fasta_test(outdir, test_type):
         results_dir,
         files["fasta_to_eval"],
         files["ref_fasta"],
-        files["truth_vcf"],
         files["primers_tsv"],
+        truth_vcf=files["truth_vcf"],
         debug=True,
         force=False,
     )
-    got_stats_tsv = os.path.join(results_dir, "results.tsv")
-    assert filecmp.cmp(got_stats_tsv, files["expect_stats_tsv"], shallow=False)
-    assert os.path.exists(os.path.join(results_dir, "per_position.tsv"))
-    assert os.path.exists(os.path.join(results_dir, "results.json"))
+    check_results_dir(results_dir, files)
+
+    if also_test_truth_fasta:
+        truth_fasta = os.path.join(results_dir, "truth.fasta")
+        results_dir = os.path.join(outdir, "results.truth_fa")
+        one_run_evaluator.eval_one_fasta(
+            results_dir,
+            files["fasta_to_eval"],
+            files["ref_fasta"],
+            files["primers_tsv"],
+            truth_fasta=truth_fasta,
+            debug=True,
+            force=False,
+        )
+        check_results_dir(results_dir, files)
+
     utils.syscall(f"rm -r {outdir}")
 
 
@@ -376,7 +395,9 @@ def test_eval_one_fasta_no_vars():
 
 
 def test_eval_one_fasta_true_ref():
-    eval_one_fasta_test("tmp.eval_one_fasta_true_ref", test_type="true_ref")
+    eval_one_fasta_test(
+        "tmp.eval_one_fasta_true_ref", test_type="true_ref", also_test_truth_fasta=True
+    )
 
 
 def test_eval_one_fasta_SNP_true_alt():
