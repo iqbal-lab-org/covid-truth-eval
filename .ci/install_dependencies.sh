@@ -11,6 +11,7 @@ apt-get update
 apt-get install -y \
   mafft \
   python3-pip \
+  python3-pysam \
   python3-setuptools
 
 
