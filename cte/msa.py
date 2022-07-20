@@ -149,12 +149,11 @@ def aln_bases_to_stats_row_and_col(ref, truth, cons):
     if ref == "-" or truth == "-" or cons == "-":
         if ref == truth:
             row = StatRow.True_ref
-        elif truth == "Z":
-            row = StatRow.Dropped_amplicon
-        elif truth == "N":
-            row = StatRow.Unknown_truth
+        elif ref != "-"  and truth != "-":
+            row = TRUTH_TO_ROW[truth]
         else:
             row = StatRow.True_indel
+
         if cons == truth:
             col = StatCol.Called_correct_alt
         elif cons == "Z":

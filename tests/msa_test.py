@@ -19,6 +19,15 @@ def test_aln_bases_to_stats_row_and_col():
     assert f("A", "Z", "Z") == (row.Dropped_amplicon, col.Dropped_amplicon)
     assert f("A", "Z", "C") == (row.Dropped_amplicon, col.Called_other)
     assert f("A", "Z", "e") == (row.Dropped_amplicon, col.No_call_genome_ends)
+    assert f("T", "T", "-") == (row.True_ref, col.Called_wrong_indel)
+    assert f("G", "T", "-") == (row.SNP_true_alt, col.Called_wrong_indel)
+    assert f("-", "A", "A") == (row.True_indel, col.Called_correct_alt)
+    assert f("-", "A", "T") == (row.True_indel, col.Called_wrong_indel)
+    assert f("A", "-", "A") == (row.True_indel, col.Called_wrong_indel)
+    assert f("A", "-", "G") == (row.True_indel, col.Called_wrong_indel)
+    assert f("-", "-", "A") == (row.True_ref, col.Called_wrong_indel)
+    assert f("-", "A", "-") == (row.True_indel, col.Called_wrong_indel)
+    assert f("A", "-", "-") == (row.True_indel, col.Called_correct_alt)
 
 
 def test_msa():
