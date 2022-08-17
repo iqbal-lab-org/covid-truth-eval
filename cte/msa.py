@@ -151,17 +151,19 @@ def aln_bases_to_stats_row_and_col(ref, truth, cons):
             row = StatRow.True_ref
         elif ref != "-"  and truth != "-":
             row = TRUTH_TO_ROW[truth]
+        elif truth == "Z":
+            row = StatRow.Dropped_amplicon
         else:
             row = StatRow.True_indel
 
-        if cons == truth:
-            col = StatCol.Called_correct_alt
-        elif cons == "Z":
+        if cons == "Z":
             col = StatCol.Dropped_amplicon
         elif cons == "e":
             col = StatCol.No_call_genome_ends
         elif cons == "N":
             col = StatCol.Called_N
+        elif cons == truth:
+            col = StatCol.Called_correct_alt
         else:
             col = StatCol.Called_wrong_indel
     else:
