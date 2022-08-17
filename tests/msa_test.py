@@ -28,6 +28,8 @@ def test_aln_bases_to_stats_row_and_col():
     assert f("-", "-", "A") == (row.True_ref, col.Called_wrong_indel)
     assert f("-", "A", "-") == (row.True_indel, col.Called_wrong_indel)
     assert f("A", "-", "-") == (row.True_indel, col.Called_correct_alt)
+    assert f("-", "Z", "Z") == (row.Dropped_amplicon, col.Dropped_amplicon)
+    assert f("-", "Z", "-") == (row.Dropped_amplicon, col.Called_wrong_indel)
 
 
 def test_msa():
